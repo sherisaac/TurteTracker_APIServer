@@ -1,0 +1,148 @@
+/api/V1/Nest
+
+routeKey: 0
+POST
+Request:
+Headers
+	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+Body
+	Content-Type: application/json
+	{			
+		"photos": [
+			"{ID}",
+			"{ID}"
+		],
+		"location": {
+			"longitude": {double},
+			"latitude": {double}
+		}
+	}
+
+Notes: 
+	All fields are optional except "apiKey"
+
+Response:
+	200 Ok:
+		{"nestId": {long}}
+	401 Unauthorized
+
+	
+	
+===============================
+
+/api/V1/Nest/{nestId}
+
+routeKey: 100
+PUT
+Request:
+Headers
+	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+Body
+	Content-Type: application/json
+	{
+		"groupId": {long},
+		"photos": [
+			"{ID}",
+			"{ID}"
+		],
+		"location": {
+			"longitude": {double},
+			"latitude": {double}
+		}
+	}
+
+Notes: 
+	All fields are optional except "apiKey"
+
+Response:
+	200 Ok
+	401 Unauthorized
+	404 Not found
+	
+-------------------------------
+
+routeKey: 110
+GET
+Headers
+	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+
+Response:
+	{	
+		"groupId": {long},
+		"photos": [
+			"{ID}",
+			"{ID}"
+		],
+		"location": {
+			"longitude": {double},
+			"latitude": {double}
+		}
+	}
+
+-------------------------------
+
+routeKey: 120
+DELETE
+Headers
+	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+	
+Response:
+	200 Ok
+	401 Unauthorized
+	404 Not found
+	
+	
+	
+===============================
+
+/api/V1/photo/{photoId}
+
+routeKey 200
+POST
+Request:
+Headers
+	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+Body
+	Content-Type: application/octet-stream
+	Stream binary.
+	
+Response:
+	200 Ok:
+		{"photoId": "{ID}"}
+	401 Unauthorized
+
+-------------------------------
+	
+routeKey: 210
+GET
+Response:	
+	200 Ok:
+		Content-Type: image/jpeg
+	404 Not found
+
+-------------------------------
+
+routeKey: 220
+DELETE
+Headers
+	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+
+===============================
+
+/api/V1/Nests/{groupId}
+
+routeKey: 310
+GET
+Headers
+	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+
+Response:
+	{	
+		"groupId": {int},
+		"nests": [
+			"{nestId}",
+			"{nestId}"
+		]
+	}
+
+	

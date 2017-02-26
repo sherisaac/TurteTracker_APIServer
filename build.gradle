@@ -1,0 +1,41 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = '1.8'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+test.systemProperties['org.netbeans.gradle.runningTests'] = 'true'
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'com.turtletracker.api.server.Server'
+}
+
+distributions {
+    main {
+        contents {
+            from ("db/") {
+                into 'db'
+            }
+            from ("config.json") {
+                into 'bin'
+            } 
+            from ("turtlekey.jks") {
+                into 'bin'
+            }
+            from ("photos/") {
+                into 'bin/photos'
+            } 
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    exclude('test/**')
+}
+
+dependencies {
+    compile group: 'org.json', name: 'json', version: '20160810'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.5'
+}
