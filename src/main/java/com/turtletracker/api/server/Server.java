@@ -9,7 +9,6 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
-import com.turtletracker.api.server.handlers.HTTPSConfirmHandler;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -25,9 +24,6 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLParameters;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
 import org.json.JSONObject;
 
@@ -134,7 +130,7 @@ public class Server implements HttpHandler {
             he.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
             he.getResponseHeaders().set("Access-Control-Max-Age", "1800");
             he.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            he.getResponseHeaders().set("Access-Control-Allow-Headers", "apiKey, Content-type");
+            he.getResponseHeaders().set("Access-Control-Allow-Headers", "Authorization, Content-type");
 
             String method = he.getRequestMethod().toUpperCase();
             if (method.equals("OPTIONS")) {

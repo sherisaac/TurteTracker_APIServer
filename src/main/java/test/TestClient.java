@@ -13,6 +13,7 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONArray;
@@ -45,7 +46,8 @@ public class TestClient {
     private static void getNests(int id) throws Exception {
         URL url = new URI("http", ip, "/api/v1/nests/" + 0, null, null).toURL();
         Map<String, String> headers = new HashMap<>();
-        headers.put("apiKey", "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289");
+        String base = Base64.getEncoder().encodeToString("admin:p@ssword".getBytes("UTF-8"));
+        headers.put("Authorization", "Basic " + base);
         Response res = new Response();
         System.out.println(readString(doGet(url, headers, res)));
     }

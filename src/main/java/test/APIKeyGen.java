@@ -12,6 +12,8 @@ import java.util.Random;
 public class APIKeyGen {
 
     public static void main(String[] args) {
+        String s = "Basic 09090909";
+        System.out.println(s.substring(6));
         Random r = new Random();
         String c = "abcdefghijklmnopqrstuvwxyz0123456789";
         char[] out = new char[75];

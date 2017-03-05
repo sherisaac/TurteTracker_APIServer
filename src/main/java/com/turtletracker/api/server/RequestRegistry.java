@@ -62,8 +62,9 @@ public class RequestRegistry {
         }
         if (!handler.validate(he.getRequestHeaders(), path)) {
             he.getResponseHeaders().set("WWW-Authenticate", "Basic realm=\"TurtleAPI\"");
-            handler.sendResponse(he, 401, "");
-            throw new InvalidPathException("Unauthorized...");
+            handler.sendResponse(he, 401, "Unauthorized");
+            logger.log(Level.SEVERE, "Unauthorized");
+            return;
         }
         try (OutputStream out = he.getResponseBody()) {
             try (InputStream in = he.getRequestBody()) {

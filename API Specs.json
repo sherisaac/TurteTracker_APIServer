@@ -1,10 +1,15 @@
+NOTES:
+	- Password should be hashed using SHA256
+
+===============================
+
 /api/V1/Nest
 
 routeKey: 0
 POST
 Request:
 Headers
-	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+	"Authorization": "Basic {base64}"
 Body
 	Content-Type: application/json
 	{			
@@ -17,9 +22,6 @@ Body
 			"latitude": {double}
 		}
 	}
-
-Notes: 
-	All fields are optional except "apiKey"
 
 Response:
 	200 Ok:
@@ -36,7 +38,7 @@ routeKey: 100
 PUT
 Request:
 Headers
-	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+	"Authorization": "Basic {base64}"
 Body
 	Content-Type: application/json
 	{
@@ -51,9 +53,6 @@ Body
 		}
 	}
 
-Notes: 
-	All fields are optional except "apiKey"
-
 Response:
 	200 Ok
 	401 Unauthorized
@@ -64,7 +63,7 @@ Response:
 routeKey: 110
 GET
 Headers
-	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+	"Authorization": "Basic {base64}"
 
 Response:
 	{	
@@ -84,7 +83,7 @@ Response:
 routeKey: 120
 DELETE
 Headers
-	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+	"Authorization": "Basic {base64}"
 	
 Response:
 	200 Ok
@@ -101,7 +100,7 @@ routeKey 200
 POST
 Request:
 Headers
-	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+	"Authorization": "Basic {base64}"
 Body
 	Content-Type: application/octet-stream
 	Stream binary.
@@ -125,7 +124,7 @@ Response:
 routeKey: 220
 DELETE
 Headers
-	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+	"Authorization": "Basic {base64}"
 
 ===============================
 
@@ -134,7 +133,7 @@ Headers
 routeKey: 310
 GET
 Headers
-	"apiKey": "xwv6pr3iyc7mie16dou03zt7ww00820ei2p8ofzluh4r1ul6qff5jt08arftax60bsfl3xqt289"
+	"Authorization": "Basic {base64}"
 
 Response:
 	{	

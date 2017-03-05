@@ -37,7 +37,7 @@ public class DeleteNestHandler extends AuthenticatedHandler {
 
     @Override
     public boolean validate(Headers headers, String[] path) {
-        return path.length == 4 && validateUser(headers.get("apiKey").get(0));
+        return path.length == 4 && validateEdit(headers.get("Authorization").get(0));
     }
 
 }
