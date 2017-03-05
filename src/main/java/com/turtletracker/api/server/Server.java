@@ -3,29 +3,21 @@
  */
 package com.turtletracker.api.server;
 
-import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
-import java.io.File;
+import com.turtletracker.api.server.handlers.HTTPSConfirmHandler;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.KeyManagementException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Enumeration;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,8 +25,10 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -63,7 +57,10 @@ public class Server implements HttpHandler {
             }
 
             startServer(HttpServer.create(new InetSocketAddress(config.getInt("httpPort")), 0), config);
-            startServer(setUpHttps(config), config);
+
+            if (config.getBoolean("useHTTPS")) {
+                startServer(setUpHttps(config), config);
+            }
 
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -71,7 +68,8 @@ public class Server implements HttpHandler {
     }
 
     private static void startServer(HttpServer server, JSONObject config) throws NoSuchAlgorithmException {
-        HttpContext httpContext = server.createContext("/api", new Server(config));
+        server.createContext("/api", new Server(config));
+//        server.createContext("/" + config.getString("sslHost"), new HTTPSConfirmHandler(config.getString("sslTarget")));
         server.setExecutor(null);
         server.start();
     }
@@ -83,9 +81,13 @@ public class Server implements HttpHandler {
         // initialise the keystore
         char[] password = "84267139".toCharArray();
         KeyStore ks = KeyStore.getInstance("JKS");
-        FileInputStream fis = new FileInputStream("turtlekey.jks");
+        FileInputStream fis = new FileInputStream("www_turtledev_org.jks");
         ks.load(fis, password);
-
+        Enumeration<String> a = ks.aliases();
+        while (a.hasMoreElements()) {
+            System.out.println(a.nextElement());
+        }
+        System.out.println(ks.getProvider());
         // setup the key manager factory
         KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
         kmf.init(ks, password);

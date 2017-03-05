@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public abstract class AuthenticatedHandler extends Handler {
 
-    protected boolean validateAPIKey(String apiKey) {
+    protected boolean validateUser(String apiKey) {
         Connection con = DatabaseConnection.getConnection();
         try (PreparedStatement stmt = con.prepareStatement("SELECT `active`, `canWrite` FROM api_key WHERE apiKey = ? LIMIT 1")) {
             stmt.setString(1, apiKey);

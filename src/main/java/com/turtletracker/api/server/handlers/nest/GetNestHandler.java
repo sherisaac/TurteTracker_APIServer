@@ -61,7 +61,7 @@ public class GetNestHandler extends AuthenticatedHandler {
 
     @Override
     public boolean validate(Headers headers, String[] path) {
-        return path.length == 4 && validateAPIKey(headers.get("apiKey").get(0));
+        return path.length == 4 && validateUser(headers.get("apiKey").get(0));
     }
 
 }
