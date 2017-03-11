@@ -24,11 +24,8 @@ public abstract class AuthenticatedHandler extends Handler {
         Connection con = DatabaseConnection.getConnection();
         try (PreparedStatement stmt = con.prepareStatement("SELECT `userName`, `password`, `role` FROM user WHERE `username` = ? AND `role` > 0 LIMIT 1")) {
             String base64 = authHeader.substring(6);
-            System.out.println(authHeader);
             String[] creds = new String(Base64.getDecoder().decode(base64), "UTF-8").split(":", 2);
             stmt.setString(1, creds[0]);
-            System.out.println(creds[0]);
-            System.out.println(creds[1]);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getString(2).equals(getPassHash(creds[1]));
@@ -47,7 +44,6 @@ public abstract class AuthenticatedHandler extends Handler {
         for (int i = 0; i < b.length; i++) {
             hexString.append(Integer.toHexString(0xFF & b[i]));
         }
-        System.out.println("Pass: " + hexString.toString());
         return hexString.toString();
     }
 }

@@ -79,11 +79,6 @@ public class Server implements HttpHandler {
         KeyStore ks = KeyStore.getInstance("JKS");
         FileInputStream fis = new FileInputStream("www_turtledev_org.jks");
         ks.load(fis, password);
-        Enumeration<String> a = ks.aliases();
-        while (a.hasMoreElements()) {
-            System.out.println(a.nextElement());
-        }
-        System.out.println(ks.getProvider());
         // setup the key manager factory
         KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
         kmf.init(ks, password);

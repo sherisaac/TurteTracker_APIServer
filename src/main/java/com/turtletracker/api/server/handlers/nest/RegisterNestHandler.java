@@ -26,15 +26,6 @@ public class RegisterNestHandler extends AuthenticatedHandler {
         JSONObject json = new JSONObject(readString(req));
         Connection con = DatabaseConnection.getConnection();
 
-        int apiId = 0;
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `apiId` FROM api_key WHERE `apiKey` = ? LIMIT 1")) {
-            stmt.setString(1, he.getRequestHeaders().get("apiKey").get(0));
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                apiId = rs.getInt(1);
-            }
-        }
-
         String nestId = generateId();
         int groupId = 0;
         if (json.keySet().contains("groupId")) {
@@ -42,18 +33,17 @@ public class RegisterNestHandler extends AuthenticatedHandler {
         }
         if (json.keySet().contains("location")) {
             JSONObject location = json.getJSONObject("location");
-            try (PreparedStatement stmt = con.prepareStatement("INSERT INTO nest (`nestId`, `groupId`, `longitude`, `latitude`, `apiId`) VALUES (?, ?, ?, ?, ?)")) {
+            try (PreparedStatement stmt = con.prepareStatement("INSERT INTO nest (`nestId`, `groupId`, `longitude`, `latitude`) VALUES (?, ?, ?, ?)")) {
                 stmt.setString(1, nestId);
                 stmt.setInt(2, groupId);
                 stmt.setDouble(3, location.getDouble("longitude"));
                 stmt.setDouble(4, location.getDouble("latitude"));
-                stmt.setInt(5, apiId);
                 stmt.execute();
             }
         } else {
-            try (PreparedStatement stmt = con.prepareStatement("INSERT INTO nest (`groupId`, `apiId`) VALUES (?, ?)")) {
-                stmt.setInt(1, groupId);
-                stmt.setInt(2, apiId);
+            try (PreparedStatement stmt = con.prepareStatement("INSERT INTO nest (`nestId`, `groupId`) VALUES (?, ?)")) {
+                stmt.setString(1, nestId);
+                stmt.setInt(2, groupId);
                 stmt.execute();
             }
         }

@@ -26,15 +26,6 @@ public class UpdateNestHandler extends AuthenticatedHandler {
         JSONObject json = new JSONObject(readString(req));
         Connection con = DatabaseConnection.getConnection();
 
-        int apiId = 0;
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `apiId` FROM api_key WHERE `apiKey` = ? LIMIT 1")) {
-            stmt.setString(1, he.getRequestHeaders().get("apiKey").get(0));
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                apiId = rs.getInt(1);
-            }
-        }
-
         String nestId = path[3];
 
         int groupId = 0;
@@ -44,13 +35,11 @@ public class UpdateNestHandler extends AuthenticatedHandler {
 
         if (json.keySet().contains("location")) {
             JSONObject location = json.getJSONObject("location");
-            try (PreparedStatement stmt = con.prepareStatement("UPDATE nest SET `groupId` = ?, `longitude` = ?, `latitude` = ?, `apiId` = ? WHERE `nestId` = ?")) {
+            try (PreparedStatement stmt = con.prepareStatement("UPDATE nest SET `groupId` = ?, `longitude` = ?, `latitude` = ? WHERE `nestId` = ?")) {
                 stmt.setInt(1, groupId);
                 stmt.setDouble(2, location.getDouble("longitude"));
                 stmt.setDouble(3, location.getDouble("latitude"));
-                stmt.setInt(4, apiId);
-
-                stmt.setString(5, nestId);
+                stmt.setString(4, nestId);
                 stmt.execute();
                 if (stmt.getUpdateCount() != 1) {
                     sendResponse(he, 404, nestId + ": Not found...");
