@@ -22,7 +22,7 @@ public abstract class AuthenticatedHandler extends Handler {
             return false;
         }
         Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `userName`, `password`, `role` FROM user WHERE `username` = ? AND `role` > 0 LIMIT 1")) {
+        try (PreparedStatement stmt = con.prepareStatement("SELECT `username`, `password`, `role` FROM user WHERE `username` = ? AND `role` > 0 LIMIT 1")) {
             String base64 = authHeader.substring(6);
             String[] creds = new String(Base64.getDecoder().decode(base64), "UTF-8").split(":", 2);
             stmt.setString(1, creds[0]);
@@ -36,7 +36,40 @@ public abstract class AuthenticatedHandler extends Handler {
         return false;
     }
 
-    private String getPassHash(String pass) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    protected boolean isAdmin(String username) {
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement stmt = con.prepareStatement("SELECT `userName`, `password`, `role` FROM user WHERE `username` = ? AND `role` = 99 LIMIT 1")) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return true;
+                }
+            }
+        } catch (Exception ex) {
+        }
+        return false;
+    }
+
+    protected boolean validateAdmin(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Basic")) {
+            return false;
+        }
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement stmt = con.prepareStatement("SELECT `userName`, `password`, `role` FROM user WHERE `username` = ? AND `role` = 99 LIMIT 1")) {
+            String base64 = authHeader.substring(6);
+            String[] creds = new String(Base64.getDecoder().decode(base64), "UTF-8").split(":", 2);
+            stmt.setString(1, creds[0]);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString(2).equals(getPassHash(creds[1]));
+                }
+            }
+        } catch (Exception ex) {
+        }
+        return false;
+    }
+
+    protected String getPassHash(String pass) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(pass.getBytes("UTF-8"));
         byte[] b = md.digest();

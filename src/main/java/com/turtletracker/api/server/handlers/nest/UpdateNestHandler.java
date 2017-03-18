@@ -28,31 +28,38 @@ public class UpdateNestHandler extends AuthenticatedHandler {
 
         String nestId = path[3];
 
-        int groupId = 0;
-        if (json.keySet().contains("groupId")) {
-            groupId = json.getInt("groupId");
+        String family = "general";
+        if (json.keySet().contains("family")) {
+            family = json.getString("family");
         }
-
+        
+        String notes = "";
+        if (json.keySet().contains("notes")) {
+            family = json.getString("notes");
+        }
+        
         if (json.keySet().contains("location")) {
             JSONObject location = json.getJSONObject("location");
-            try (PreparedStatement stmt = con.prepareStatement("UPDATE nest SET `groupId` = ?, `longitude` = ?, `latitude` = ? WHERE `nestId` = ?")) {
-                stmt.setInt(1, groupId);
+            try (PreparedStatement stmt = con.prepareStatement("UPDATE nest SET `family` = ?, `longitude` = ?, `latitude` = ?, `notes` = ? WHERE `nestId` = ?")) {
+                stmt.setString(1, family);
                 stmt.setDouble(2, location.getDouble("longitude"));
                 stmt.setDouble(3, location.getDouble("latitude"));
-                stmt.setString(4, nestId);
+                stmt.setString(4, notes);
+                stmt.setString(5, nestId);
                 stmt.execute();
                 if (stmt.getUpdateCount() != 1) {
-                    sendResponse(he, 404, nestId + ": Not found...");
+                    sendResponse(he, 404, "{\"err\":\"" + nestId + ": Not found...\"}");
                     return;
                 }
             }
         } else {
-            try (PreparedStatement stmt = con.prepareStatement("UPDATE nest SET `groupId` = ? WHERE `nestId` = ?")) {
-                stmt.setInt(1, groupId);
-                stmt.setString(2, nestId);
+            try (PreparedStatement stmt = con.prepareStatement("UPDATE nest SET `groupId` = ?, `notes` = ? WHERE `nestId` = ?")) {
+                stmt.setString(1, family);
+                stmt.setString(2, notes);
+                stmt.setString(3, nestId);
                 stmt.execute();
                 if (stmt.getUpdateCount() != 1) {
-                    sendResponse(he, 404, nestId + ": Not found...");
+                    sendResponse(he, 404, "{\"err\":\"" + nestId + ": Not found...\"}");
                     return;
                 }
             }
@@ -71,7 +78,7 @@ public class UpdateNestHandler extends AuthenticatedHandler {
             }
         }
 
-        sendResponse(he, 200, nestId + ": Updated.");
+        sendResponse(he, 200, "{\"msg\":\"" + nestId + ": Updated\"}");
     }
 
     @Override

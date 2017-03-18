@@ -9,11 +9,9 @@ package com.turtletracker.api.server;
  */
 public enum Opcodes {
     registerNest(0),
-    
     updateNest(100),
     getNest(110),
     deleteNest(120),
-    
     uploadPhoto(200),
     getPhoto(210),
     deletePhoto(220);

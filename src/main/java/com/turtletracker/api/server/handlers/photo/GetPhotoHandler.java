@@ -28,8 +28,9 @@ public class GetPhotoHandler extends Handler {
     public void handle(HttpExchange he, InputStream req, OutputStream res, String[] path) throws Exception {
         Connection con = DatabaseConnection.getConnection();
         String fileName = null;
+        String photoId = path[3];
         try (PreparedStatement stmt = con.prepareStatement("SELECT `filename` FROM photo WHERE photoId = ? AND `visible` = 1 LIMIT 1")) {
-            stmt.setString(1, path[3]);
+            stmt.setString(1,photoId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -37,10 +38,10 @@ public class GetPhotoHandler extends Handler {
                 }
             }
         }
-        
+
         File f = new File("photos/" + fileName);
         if (fileName == null || !f.exists()) {
-            sendResponse(he, 404, path[3] + ": Not found...");
+            sendResponse(he, 404, "{\"err\":\"Photo: " + photoId + ": Not found...\"}");
             return;
         }
 

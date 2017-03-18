@@ -1,5 +1,5 @@
 NOTES:
-	- Password should be hashed using SHA256
+- Password should be hashed using SHA256
 
 ===============================
 
@@ -9,27 +9,27 @@ routeKey: 0
 POST
 Request:
 Headers
-	"Authorization": "Basic {base64}"
+"Authorization": "Basic {base64}"
 Body
-	Content-Type: application/json
-	{			
-		"photos": [
-			"{ID}",
-			"{ID}"
-		],
-		"location": {
-			"longitude": {double},
-			"latitude": {double}
-		}
+Content - Type: application/json
+{			
+	"photos": [
+		"{ID}",
+		"{ID}"
+	],
+	"location": {
+	"longitude": {double},
+		"latitude": {double}
 	}
+}
 
 Response:
-	200 Ok:
-		{"nestId": {long}}
-	401 Unauthorized
+200 Ok:
+	{"nestId": "{id}"}
+401 Unauthorized
 
-	
-	
+
+
 ===============================
 
 /api/V1/Nest/{nestId}
@@ -38,60 +38,59 @@ routeKey: 100
 PUT
 Request:
 Headers
-	"Authorization": "Basic {base64}"
+"Authorization": "Basic {base64}"
 Body
-	Content-Type: application/json
-	{
-		"groupId": {long},
-		"photos": [
-			"{ID}",
-			"{ID}"
-		],
-		"location": {
-			"longitude": {double},
-			"latitude": {double}
-		}
+Content - Type: application/json
+{
+	"family": {long},
+	"photos": [
+		"{ID}",
+		"{ID}"
+	],
+	"location": {
+		"longitude": {double},
+		"latitude": {double}
 	}
+}
 
 Response:
-	200 Ok
-	401 Unauthorized
-	404 Not found
-	
--------------------------------
+200 Ok
+401 Unauthorized
+404 Not found
 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 routeKey: 110
 GET
 Headers
-	"Authorization": "Basic {base64}"
+"Authorization": "Basic {base64}"
 
 Response:
-	{	
-		"groupId": {long},
-		"photos": [
-			"{ID}",
-			"{ID}"
-		],
-		"location": {
-			"longitude": {double},
-			"latitude": {double}
-		}
-	}
+{	
+"groupId": {long},
+	"photos": [
+		"{ID}",
+		"{ID}"
+	],
+	"location": {
+		"longitude": {double},
+		"latitude": {double}
+	},
+	"createdDate": "{string}",
+	"lastUpdate": "{string}"
+}
 
--------------------------------
-
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 routeKey: 120
 DELETE
 Headers
-	"Authorization": "Basic {base64}"
-	
+"Authorization": "Basic {base64}"
+
 Response:
-	200 Ok
-	401 Unauthorized
-	404 Not found
-	
-	
-	
+200 Ok
+401 Unauthorized
+404 Not found
+
+
 ===============================
 
 /api/V1/photo/{photoId}
@@ -100,48 +99,46 @@ routeKey 200
 POST
 Request:
 Headers
-	"Authorization": "Basic {base64}"
+"Authorization": "Basic {base64}"
 Body
-	Content-Type: application/octet-stream
-	Stream binary.
-	
-Response:
-	200 Ok:
-		{"photoId": "{ID}"}
-	401 Unauthorized
+Content - Type: application/octet - stream
+Stream binary.
 
--------------------------------
-	
+Response:
+200 Ok:
+{"photoId": "{ID}"}
+
+401 Unauthorized
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 routeKey: 210
 GET
 Response:	
-	200 Ok:
-		Content-Type: image/jpeg
-	404 Not found
+200 Ok:
+Content - Type: image/jpeg
+404 Not found
 
--------------------------------
-
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 routeKey: 220
 DELETE
 Headers
-	"Authorization": "Basic {base64}"
+"Authorization": "Basic {base64}"
 
 ===============================
 
-/api/V1/Nests/{groupId}
+/api/V1/Nests/{family}
 
 routeKey: 310
 GET
 Headers
-	"Authorization": "Basic {base64}"
+"Authorization": "Basic {base64}"
 
 Response:
-	{	
-		"groupId": {int},
-		"nests": [
-			"{nestId}",
-			"{nestId}"
-		]
-	}
+{	
+	"family": "{id}",
+	"nests": [
+		"{nestId}",
+		"{nestId}"
+	]
+}
 
-	

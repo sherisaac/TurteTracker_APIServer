@@ -29,20 +29,23 @@ public class TestClient {
     public static void main(String[] args) throws Exception {
         long startTime = System.currentTimeMillis();
 
-        String nestId = registerNest();
-        String photoId = "mtmz0bygb8ulcit";
-        getNest(nestId);
-//        getNests(0);
+//        String userId = registerUser("ikeotl");
+//        String nestId = registerNest("testFam");
+//        String photoId = "mtmz0bygb8ulcit";
+//        getNest(nestId);
+//        getNests("general");
 //        updateNest(nestId);
 //        deleteNest(nestId);
-
-//        System.out.println(uploadPhoto("photos/dusk.jpg"));
+//        getNest(nestId);
+//        System.out.println(uploadPhoto("photos/test.jpg"));
 //        deletePhoto(photoId);
+//        updateUser("ikeotl");
+queryNests("admin");
         System.out.println("time: " + (System.currentTimeMillis() - startTime));
     }
 
-    private static void getNests(int id) throws Exception {
-        URL url = new URI("http", ip, "/api/v1/nests/" + 0, null, null).toURL();
+    private static void getNests(String family) throws Exception {
+        URL url = new URI("http", ip, "/api/v1/nests/" + family, null, null).toURL();
         Map<String, String> headers = new HashMap<>();
         String base = Base64.getEncoder().encodeToString("admin:p@ssword".getBytes("UTF-8"));
         headers.put("Authorization", "Basic " + base);
@@ -59,7 +62,55 @@ public class TestClient {
         System.out.println(readString(doGet(url, headers, res)));
     }
 
-    private static String registerNest() throws Exception {
+    private static void updateUser(String username) throws Exception {
+        URL url = new URI("http", ip, "/api/v1/user/" + username, null, null).toURL();
+        Map<String, String> headers = new HashMap<>();
+        String base = Base64.getEncoder().encodeToString("ikeotl:abc".getBytes("UTF-8"));
+        headers.put("Authorization", "Basic " + base);
+        Response res = new Response();
+        JSONObject json = new JSONObject();
+
+        json.put("password", "abc");
+        json.put("userId", "100"); // wont actually update this one
+
+        json.put("firstname", "ISAAV");
+        System.out.println(readString(doPut(url, headers, json.toString().getBytes(), res)));
+    }
+
+    private static String registerUser(String username) throws Exception {
+        URL url = new URI("http", ip, "/api/v1/user", null, null).toURL();
+        Map<String, String> headers = new HashMap<>();
+        String base = Base64.getEncoder().encodeToString("admin:p@ssword".getBytes("UTF-8"));
+        headers.put("Authorization", "Basic " + base);
+        Response res = new Response();
+        JSONObject json = new JSONObject();
+
+        json.put("username", username);
+        json.put("password", "abc");
+        json.put("firstName", "isaac");
+        json.put("lastName", "boop");
+        json.put("role", 10);
+
+        JSONObject o = new JSONObject(readString(doPost(url, headers, json.toString().getBytes(), res)));
+        System.out.println(o.toString());
+        return o.getString("userId");
+    }
+
+    private static void queryNests(String query) throws Exception {
+        URL url = new URI("http", ip, "/api/v1/nests", null, null).toURL();
+        Map<String, String> headers = new HashMap<>();
+        String base = Base64.getEncoder().encodeToString("admin:p@ssword".getBytes("UTF-8"));
+        headers.put("Authorization", "Basic " + base);
+        Response res = new Response();
+        JSONObject json = new JSONObject();
+
+        json.put("username", "ikeotl");
+
+        JSONObject o = new JSONObject(readString(doPost(url, headers, json.toString().getBytes(), res)));
+        System.out.println(o.toString());
+    }
+
+    private static String registerNest(String family) throws Exception {
         URL url = new URI("http", ip, "/api/v1/nest", null, null).toURL();
         Map<String, String> headers = new HashMap<>();
         String base = Base64.getEncoder().encodeToString("admin:p@ssword".getBytes("UTF-8"));
@@ -71,6 +122,7 @@ public class TestClient {
         location.put("longitude", 41.2222);
         location.put("latitude", 1.2222);
         json.put("location", location);
+        json.put("notes", "THIS IS A NOTEEEEEE!@#@###$$#ESDF");
 
 //        JSONArray photos = new JSONArray();
 //        photos.put("blk1eetc9wzn8fh");
@@ -78,7 +130,7 @@ public class TestClient {
 //        photos.put("71739y7sy8d0wh6");
 //        photos.put("kn4dm1qkw2lgbhy");
 //        json.put("photos", photos);
-        json.put("groupId", 0);
+        json.put("family", family);
 
         JSONObject o = new JSONObject(readString(doPost(url, headers, json.toString().getBytes(), res)));
         return o.getString("nestId");

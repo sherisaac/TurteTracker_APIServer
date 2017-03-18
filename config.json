@@ -1,15 +1,14 @@
 {
-	"databaseURL": "jdbc:mysql://127.0.0.1:3306/turtletracker",
-	"databaseUser": "root",
-	"databasePass": "",
-	
-	"httpPort": "8888",
-	"httpsPort": "8889",
-	"useHTTPS": false,
-	
-	
-	"sslHost": "9EF6E5E96465B60EF0364946DC9EDCAF.txt",
-	"sslTarget": "4F3A5DA03359DA1C77DD873FB19330FF81D4A875\ncomodoca.com",
-	
-	"consoleOut": true
+    "databaseURL": "jdbc:mysql://127.0.0.1:3306/turtletracker",
+    "databaseUser": "root",
+    "databasePass": "",
+
+    "httpPort": "8888",
+    "httpsPort": "8889",
+    "useHTTPS": false,
+
+    "sslHost": "9EF6E5E96465B60EF0364946DC9EDCAF.txt",
+    "sslTarget": "4F3A5DA03359DA1C77DD873FB19330FF81D4A875\ncomodoca.com",
+
+    "consoleOut": true
 }

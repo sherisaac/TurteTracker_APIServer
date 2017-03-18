@@ -35,11 +35,11 @@ public class DeletePhotoHandler extends AuthenticatedHandler {
             stmt.setString(1, photoId);
             stmt.execute();
             if (stmt.getUpdateCount() == 1) {
-                sendResponse(he, 200, photoId + ": Deleted.");
+                sendResponse(he, 200, "{\"msg\":\"Nest: " + photoId + ": Deleted.\"}");
                 return;
             }
 
-            sendResponse(he, 404, "Photo not found...");
+            sendResponse(he, 404, "{\"err\":\"Photo: " + photoId + ": Not found...\"}");
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, null, ex);
         }

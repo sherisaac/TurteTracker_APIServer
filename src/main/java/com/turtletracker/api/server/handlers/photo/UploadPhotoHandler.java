@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.Base64;
 import org.json.JSONArray;
 
 /**
@@ -31,15 +32,21 @@ public class UploadPhotoHandler extends AuthenticatedHandler {
                 out.write(buf, 0, r);
             }
         }
+        String authHeader = he.getRequestHeaders().get("Authorization").get(0);
+        String base64 = authHeader.substring(6);
+        String[] creds = new String(Base64.getDecoder().decode(base64), "UTF-8").split(":", 2);
+
+        String userId = getUserId(creds[0]);
         
         Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement stmt = con.prepareStatement("INSERT INTO photo (`photoId`, `filename`) VALUES (?, ?)")) {
+        try (PreparedStatement stmt = con.prepareStatement("INSERT INTO photo (`photoId`, `filename`, `userId`) VALUES (?, ?, ?)")) {
             stmt.setString(1, photoId);
             stmt.setString(2, photoId + ".jpg");
+            stmt.setString(3, userId);
             stmt.execute();
         }
 
-        sendResponse(he, 200, "{\"photoId\": \"" + photoId + "\"}");
+        sendResponse(he, 201, "{\"photoId\": \"" + photoId + "\"}");
     }
 
     @Override

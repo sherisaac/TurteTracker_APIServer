@@ -9,6 +9,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Base64;
 import java.util.Random;
 
 /**
@@ -32,9 +36,23 @@ public abstract class Handler {
         return new String(out.toByteArray());
     }
 
+    protected String getUserId(String username) {
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement stmt = con.prepareStatement("SELECT `userId` FROM user WHERE `username` = ? LIMIT 1")) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString(1);
+                }
+            }
+        } catch (Exception ex) {
+        }
+        return null;
+    }
+
     protected String generateId() {
         Random r = new Random();
-        String c = "abcdefghijklmnopqrstuvwxyz0123456789";
+        String c = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         char[] out = new char[15];
         for (int i = 0; i < 15; i++) {
             out[i] = c.charAt(r.nextInt(c.length()));
