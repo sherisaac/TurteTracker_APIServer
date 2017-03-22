@@ -35,7 +35,7 @@ public class UpdateNestHandler extends AuthenticatedHandler {
         
         String notes = "";
         if (json.keySet().contains("notes")) {
-            family = json.getString("notes");
+            notes = json.getString("notes");
         }
         
         if (json.keySet().contains("location")) {
