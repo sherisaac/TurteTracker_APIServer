@@ -28,11 +28,15 @@ CREATE TABLE `nest` (
   `nestId` varchar(15) NOT NULL,
   `family` varchar(45) NOT NULL DEFAULT 'general',
   `userId` varchar(15) DEFAULT NULL,
-  `longitude` double DEFAULT NULL,
-  `latitude` double DEFAULT NULL,
+  `longitude` double DEFAULT '0',
+  `latitude` double DEFAULT '0',
   `visible` tinyint(4) DEFAULT '1',
+  `createDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastUpdate` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `notes` varchar(255) DEFAULT '',
   PRIMARY KEY (`nestId`),
-  UNIQUE KEY `nestId_UNIQUE` (`nestId`)
+  UNIQUE KEY `nestId_UNIQUE` (`nestId`),
+  KEY `userId` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -58,10 +62,14 @@ CREATE TABLE `photo` (
   `filename` varchar(45) NOT NULL,
   `userId` varchar(15) DEFAULT NULL,
   `visible` tinyint(4) NOT NULL DEFAULT '1',
+  `createDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastUpdate` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`photoId`),
   UNIQUE KEY `photoId_UNIQUE` (`photoId`),
   KEY `fk_nestId_idx` (`nestId`),
-  CONSTRAINT `photo_ibfk_1` FOREIGN KEY (`nestId`) REFERENCES `nest` (`nestId`)
+  KEY `userId` (`userId`),
+  CONSTRAINT `photo_ibfk_1` FOREIGN KEY (`nestId`) REFERENCES `nest` (`nestId`),
+  CONSTRAINT `photo_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -85,9 +93,11 @@ CREATE TABLE `user` (
   `userId` varchar(15) NOT NULL,
   `username` varchar(25) NOT NULL,
   `password` char(64) NOT NULL,
-  `firstName` varchar(45) DEFAULT NULL,
-  `lastName` varchar(45) DEFAULT NULL,
+  `firstName` varchar(45) DEFAULT '',
+  `lastName` varchar(45) DEFAULT '',
   `role` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Higher role value more power. 0 equals no insert power.',
+  `createDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastUpdate` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `userId_UNIQUE` (`userId`)
@@ -100,7 +110,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('1','admin','fd25965ce169b5c023282bb5fa2e239b6716726db5defaa8ceff225be85dc',NULL,NULL,99);
+INSERT INTO `user` VALUES ('1','admin','fd25965ce169b5c023282bb5fa2e239b6716726db5defaa8ceff225be85dc','','',99,'2017-03-18 18:00:13','2017-03-18 21:18:18'),('lC8a4v0V7Orl4mx','ikeotl','ba7816bf8f1cfea414140de5dae2223b0361a396177a9cb410ff61f2015ad','ISAAV','boop',100,'2017-03-18 19:52:46','2017-03-18 21:45:34');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -113,4 +123,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-18 13:48:35
+-- Dump completed on 2017-03-18 18:36:26
