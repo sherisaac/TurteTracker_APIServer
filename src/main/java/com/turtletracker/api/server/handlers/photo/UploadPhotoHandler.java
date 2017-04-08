@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Base64;
-import org.json.JSONArray;
 
 /**
  *
@@ -37,7 +36,7 @@ public class UploadPhotoHandler extends AuthenticatedHandler {
         String[] creds = new String(Base64.getDecoder().decode(base64), "UTF-8").split(":", 2);
 
         String userId = getUserId(creds[0]);
-        
+
         Connection con = DatabaseConnection.getConnection();
         try (PreparedStatement stmt = con.prepareStatement("INSERT INTO photo (`photoId`, `filename`, `userId`) VALUES (?, ?, ?)")) {
             stmt.setString(1, photoId);

@@ -30,7 +30,7 @@ public class GetPhotoHandler extends Handler {
         String fileName = null;
         String photoId = path[3];
         try (PreparedStatement stmt = con.prepareStatement("SELECT `filename` FROM photo WHERE photoId = ? AND `visible` = 1 LIMIT 1")) {
-            stmt.setString(1,photoId);
+            stmt.setString(1, photoId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {

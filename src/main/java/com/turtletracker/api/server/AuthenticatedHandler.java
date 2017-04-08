@@ -38,7 +38,7 @@ public abstract class AuthenticatedHandler extends Handler {
 
     protected boolean isAdmin(String username) {
         Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `userName`, `password`, `role` FROM user WHERE `username` = ? AND `role` = 99 LIMIT 1")) {
+        try (PreparedStatement stmt = con.prepareStatement("SELECT `userName`, `password`, `role` FROM user WHERE `username` = ? AND `role` >= 99 LIMIT 1")) {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -55,7 +55,7 @@ public abstract class AuthenticatedHandler extends Handler {
             return false;
         }
         Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `userName`, `password`, `role` FROM user WHERE `username` = ? AND `role` = 99 LIMIT 1")) {
+        try (PreparedStatement stmt = con.prepareStatement("SELECT `userName`, `password`, `role` FROM user WHERE `username` = ? AND `role` >= 99 LIMIT 1")) {
             String base64 = authHeader.substring(6);
             String[] creds = new String(Base64.getDecoder().decode(base64), "UTF-8").split(":", 2);
             stmt.setString(1, creds[0]);

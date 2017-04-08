@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,7 +42,7 @@ public class RegisterNestHandler extends AuthenticatedHandler {
         if (json.keySet().contains("notes")) {
             notes = json.getString("notes");
         }
-        
+
         if (json.keySet().contains("location")) {
             JSONObject location = json.getJSONObject("location");
             try (PreparedStatement stmt = con.prepareStatement("INSERT INTO nest (`nestId`, `family`, `longitude`, `latitude`, `userId`, `notes`) VALUES (?, ?, ?, ?, ?, ?)")) {

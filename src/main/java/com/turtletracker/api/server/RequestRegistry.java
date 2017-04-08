@@ -14,6 +14,7 @@ import com.turtletracker.api.server.handlers.nest.GetNestHandler;
 import com.turtletracker.api.server.handlers.nest.QueryNestsHandler;
 import com.turtletracker.api.server.handlers.nest.RegisterNestHandler;
 import com.turtletracker.api.server.handlers.nest.UpdateNestHandler;
+import com.turtletracker.api.server.handlers.user.AuthUserHandler;
 import com.turtletracker.api.server.handlers.user.GetUserHandler;
 import com.turtletracker.api.server.handlers.user.RegisterUserHandler;
 import com.turtletracker.api.server.handlers.user.UpdateUserHandler;
@@ -52,6 +53,8 @@ public class RequestRegistry {
         addHandler(new Pair("user", "POST"), new RegisterUserHandler());
         addHandler(new Pair("user", "PUT"), new UpdateUserHandler());
         addHandler(new Pair("user", "GET"), new GetUserHandler());
+
+        addHandler(new Pair("auth", "GET"), new AuthUserHandler());
 
     }
 

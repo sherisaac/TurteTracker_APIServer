@@ -7,8 +7,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -24,23 +22,24 @@ import org.json.JSONObject;
  */
 public class TestClient {
 
-    public static final String ip = "127.0.0.1:8888";
+    public static final String ip = "turtledev.org:8888";
 
     public static void main(String[] args) throws Exception {
         long startTime = System.currentTimeMillis();
 
 //        String userId = registerUser("ikeotl");
 //        String nestId = registerNest("testFam");
+//        System.out.println(nestId);
 //        String photoId = "mtmz0bygb8ulcit";
 //        getNest(nestId);
 //        getNests("general");
 //        updateNest(nestId);
 //        deleteNest(nestId);
 //        getNest(nestId);
-//        System.out.println(uploadPhoto("photos/test.jpg"));
+        System.out.println(uploadPhoto("photos/test.jpg"));
 //        deletePhoto(photoId);
 //        updateUser("ikeotl");
-queryNests("admin");
+//queryNests("admin");
         System.out.println("time: " + (System.currentTimeMillis() - startTime));
     }
 

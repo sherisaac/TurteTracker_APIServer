@@ -46,7 +46,7 @@ public class GetNestFamilyHandler extends AuthenticatedHandler {
             nests.put(nest.getJSON());
         }
         json.put("nests", nests);
-        
+
         sendResponse(he, 200, json.toString());
     }
 

@@ -13,6 +13,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -24,6 +26,18 @@ public abstract class Handler {
     public abstract void handle(HttpExchange he, InputStream req, OutputStream res, String[] path) throws Exception;
 
     public abstract boolean validate(Headers headers, String[] path);
+
+    protected Map<String, String> getQueryMap(String query) {
+        String[] params = query.split("&");
+        Map<String, String> map = new HashMap<>();
+        for (String param : params) {
+            String[] p = param.split("=");
+            String name = p[0];
+            String value = p.length == 2 ? p[1] : null;
+            map.put(name, value);
+        }
+        return map;
+    }
 
     protected String readString(InputStream in) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
