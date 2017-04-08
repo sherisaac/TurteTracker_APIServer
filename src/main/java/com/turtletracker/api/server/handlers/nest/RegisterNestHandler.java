@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -24,36 +24,42 @@ public class RegisterNestHandler extends AuthenticatedHandler {
     @Override
     public void handle(HttpExchange he, InputStream req, OutputStream res, String[] path) throws Exception {
         JSONObject json = new JSONObject(readString(req));
-        Connection con = DatabaseConnection.getConnection();
 
-        int apiId = 0;
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `apiId` FROM api_key WHERE `apiKey` = ? LIMIT 1")) {
-            stmt.setString(1, he.getRequestHeaders().get("apiKey").get(0));
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                apiId = rs.getInt(1);
-            }
-        }
+        Connection con = DatabaseConnection.getConnection();
+        String authHeader = he.getRequestHeaders().get("Authorization").get(0);
+        String base64 = authHeader.substring(6);
+        String[] creds = new String(Base64.getDecoder().decode(base64), "UTF-8").split(":", 2);
+
+        String userId = getUserId(creds[0]);
 
         String nestId = generateId();
-        int groupId = 0;
-        if (json.keySet().contains("groupId")) {
-            groupId = json.getInt("groupId");
+        String family = "general";
+        if (json.keySet().contains("family")) {
+            family = json.getString("family");
         }
+
+        String notes = "";
+        if (json.keySet().contains("notes")) {
+            notes = json.getString("notes");
+        }
+
         if (json.keySet().contains("location")) {
             JSONObject location = json.getJSONObject("location");
-            try (PreparedStatement stmt = con.prepareStatement("INSERT INTO nest (`nestId`, `groupId`, `longitude`, `latitude`, `apiId`) VALUES (?, ?, ?, ?, ?)")) {
+            try (PreparedStatement stmt = con.prepareStatement("INSERT INTO nest (`nestId`, `family`, `longitude`, `latitude`, `userId`, `notes`) VALUES (?, ?, ?, ?, ?, ?)")) {
                 stmt.setString(1, nestId);
-                stmt.setInt(2, groupId);
+                stmt.setString(2, family);
                 stmt.setDouble(3, location.getDouble("longitude"));
                 stmt.setDouble(4, location.getDouble("latitude"));
-                stmt.setInt(5, apiId);
+                stmt.setString(5, userId);
+                stmt.setString(6, notes);
                 stmt.execute();
             }
         } else {
-            try (PreparedStatement stmt = con.prepareStatement("INSERT INTO nest (`groupId`, `apiId`) VALUES (?, ?)")) {
-                stmt.setInt(1, groupId);
-                stmt.setInt(2, apiId);
+            try (PreparedStatement stmt = con.prepareStatement("INSERT INTO nest (`nestId`, `family`, `userId`, `notes`) VALUES (?, ?, ?, ?)")) {
+                stmt.setString(1, nestId);
+                stmt.setString(2, family);
+                stmt.setString(3, userId);
+                stmt.setString(4, notes);
                 stmt.execute();
             }
         }
@@ -71,12 +77,12 @@ public class RegisterNestHandler extends AuthenticatedHandler {
             }
         }
 
-        sendResponse(he, 200, "{\"nestId\":\"" + nestId + "\"}");
+        sendResponse(he, 201, "{\"nestId\":\"" + nestId + "\"}");
     }
 
     @Override
     public boolean validate(Headers headers, String[] path) {
-        return path.length == 3 && validateAPIKey(headers.get("apiKey").get(0));
+        return path.length == 3 && validateEdit(headers.get("Authorization").get(0));
     }
 
 }

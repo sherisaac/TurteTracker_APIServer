@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -19,41 +21,38 @@ import org.json.JSONObject;
  *
  * @author Ike [Admin@KudoDev.com]
  */
-public class GetNestGroupHandler extends AuthenticatedHandler {
+public class GetNestFamilyHandler extends AuthenticatedHandler {
 
     @Override
     public void handle(HttpExchange he, InputStream req, OutputStream res, String[] path) throws Exception {
 
         Connection con = DatabaseConnection.getConnection();
 
-        int groupId = Integer.parseInt(path[3]);
-        JSONObject json = new JSONObject();
-
-        JSONArray nests = new JSONArray();
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `nestId`, `longitude`, `latitude` FROM nest WHERE `groupId` = ? AND `visible` = 1")) {
-            stmt.setInt(1, groupId);
+        String family = path[3];
+        List<String> nestIds = new ArrayList<>();
+        try (PreparedStatement stmt = con.prepareStatement("SELECT `nestId` FROM nest WHERE `family` = ? AND `visible` = 1")) {
+            stmt.setString(1, family);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    JSONObject nest = new JSONObject();
-                    nest.put("nestId", rs.getString(1));
-
-                    JSONObject location = new JSONObject();
-                    location.put("longitude", rs.getDouble(2));
-                    location.put("latitude", rs.getDouble(3));
-                    nest.put("location", location);
-                    nests.put(nest);
+                    nestIds.add(rs.getString(1));
                 }
             }
         }
+        JSONObject json = new JSONObject();
+        json.put("family", family);
+        JSONArray nests = new JSONArray();
+        for (String n : nestIds) {
+            Nest nest = new Nest(n);
+            nests.put(nest.getJSON());
+        }
         json.put("nests", nests);
-        json.put("groupId", groupId);
 
         sendResponse(he, 200, json.toString());
     }
 
     @Override
     public boolean validate(Headers headers, String[] path) {
-        return path.length == 4 && validateAPIKey(headers.get("apiKey").get(0));
+        return path.length == 4 && headers.containsKey("Authorization") && validateEdit(headers.get("Authorization").get(0));
     }
 
 }

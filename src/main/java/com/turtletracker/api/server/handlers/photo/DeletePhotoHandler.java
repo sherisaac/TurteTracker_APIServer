@@ -35,11 +35,11 @@ public class DeletePhotoHandler extends AuthenticatedHandler {
             stmt.setString(1, photoId);
             stmt.execute();
             if (stmt.getUpdateCount() == 1) {
-                sendResponse(he, 200, photoId + ": Deleted.");
+                sendResponse(he, 200, "{\"msg\":\"Nest: " + photoId + ": Deleted.\"}");
                 return;
             }
 
-            sendResponse(he, 404, "Photo not found...");
+            sendResponse(he, 404, "{\"err\":\"Photo: " + photoId + ": Not found...\"}");
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
@@ -47,7 +47,7 @@ public class DeletePhotoHandler extends AuthenticatedHandler {
 
     @Override
     public boolean validate(Headers headers, String[] path) {
-        return path.length == 4 && validateAPIKey(headers.get("apiKey").get(0));
+        return path.length == 4 && validateEdit(headers.get("Authorization").get(0));
     }
 
 }

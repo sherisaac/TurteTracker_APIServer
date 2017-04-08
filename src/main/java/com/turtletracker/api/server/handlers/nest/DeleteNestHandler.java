@@ -26,18 +26,18 @@ public class DeleteNestHandler extends AuthenticatedHandler {
             stmt.setString(1, nestId);
             stmt.execute();
             if (stmt.getUpdateCount() == 1) {
-                sendResponse(he, 200, nestId + ": Deleted.");
+                sendResponse(he, 200, "{\"msg\":\"Nest: " + nestId + ": Deleted.\"}");
                 return;
             }
 
-            sendResponse(he, 404, nestId + ": Not found...");
+            sendResponse(he, 404, "{\"err\":\"Nest: " + nestId + ": Not found...\"}");
         }
 
     }
 
     @Override
     public boolean validate(Headers headers, String[] path) {
-        return path.length == 4 && validateAPIKey(headers.get("apiKey").get(0));
+        return path.length == 4 && validateEdit(headers.get("Authorization").get(0));
     }
 
 }
