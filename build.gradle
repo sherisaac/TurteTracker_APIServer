@@ -22,7 +22,7 @@ distributions {
             }
             from ("photos/") {
                 into 'bin/photos'
-            } 
+            }
         }
     }
 }

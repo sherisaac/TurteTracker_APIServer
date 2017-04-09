@@ -34,13 +34,13 @@ public class AuthUserHandler extends AuthenticatedHandler {
 
         Map<String, String> queryMap = getQueryMap(he.getRequestURI().getQuery());
         Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `username`, `password` FROM user WHERE `username` = ? LIMIT 1")) {
+        try (PreparedStatement stmt = con.prepareStatement("SELECT `username`, `password`, `role` FROM user WHERE `username` = ? LIMIT 1")) {
             stmt.setString(1, queryMap.get("username"));
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     if (rs.getString(2).equals(getPassHash(queryMap.get("password")))) {
-                        sendResponse(he, 200, "{\"msg\":\"Valid credentials\"}");
+                        sendResponse(he, 200, "{\"msg\":\"Valid credentials\",\"role\":\"" + rs.getString(3) + "\"}");
                         return;
                     }
                 }
