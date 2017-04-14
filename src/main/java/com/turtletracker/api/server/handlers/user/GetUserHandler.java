@@ -34,7 +34,7 @@ public class GetUserHandler extends Handler {
             String userId = getUserId(username);
             json.put("username", username);
             json.put("userId", userId);
-            try (PreparedStatement stmt = con.prepareStatement("SELECT `firstName`, `lastName`, `role`, `createDate` FROM user WHERE userId = ? LIMIT 1")) {
+            try (PreparedStatement stmt = con.prepareStatement("SELECT `firstName`, `lastName`, `role`, `createDate` FROM user WHERE userId = ? AND `role` > 0 LIMIT 1")) {
                 stmt.setString(1, userId);
                 try (ResultSet rs = stmt.executeQuery()) {
                     rs.next();
@@ -50,7 +50,7 @@ public class GetUserHandler extends Handler {
         }
 
         JSONArray users = new JSONArray();
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `userId`, `firstName`, `lastName`, `role`, `username` FROM user")) {
+        try (PreparedStatement stmt = con.prepareStatement("SELECT `userId`, `firstName`, `lastName`, `role`, `username` FROM user WHERE `role` > 0")) {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     JSONObject j = new JSONObject();

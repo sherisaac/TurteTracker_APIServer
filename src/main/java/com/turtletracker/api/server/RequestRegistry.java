@@ -5,6 +5,7 @@ package com.turtletracker.api.server;
 
 import com.turtletracker.api.server.handlers.BadRequestHandler;
 import com.sun.net.httpserver.HttpExchange;
+import com.turtletracker.api.server.handlers.csv.GetNestCSVHandler;
 import com.turtletracker.api.server.handlers.photo.DeletePhotoHandler;
 import com.turtletracker.api.server.handlers.photo.GetPhotoHandler;
 import com.turtletracker.api.server.handlers.photo.UploadPhotoHandler;
@@ -55,6 +56,8 @@ public class RequestRegistry {
         addHandler(new Pair("user", "GET"), new GetUserHandler());
 
         addHandler(new Pair("auth", "GET"), new AuthUserHandler());
+
+        addHandler(new Pair("csv", "GET"), new GetNestCSVHandler());
 
     }
 
