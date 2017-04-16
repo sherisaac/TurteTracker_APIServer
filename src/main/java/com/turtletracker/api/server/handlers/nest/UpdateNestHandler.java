@@ -52,7 +52,7 @@ public class UpdateNestHandler extends AuthenticatedHandler {
                 }
             }
         } else {
-            try (PreparedStatement stmt = con.prepareStatement("UPDATE nest SET `groupId` = ?, `notes` = ? WHERE `nestId` = ?")) {
+            try (PreparedStatement stmt = con.prepareStatement("UPDATE nest SET `family` = ?, `notes` = ? WHERE `nestId` = ?")) {
                 stmt.setString(1, family);
                 stmt.setString(2, notes);
                 stmt.setString(3, nestId);
