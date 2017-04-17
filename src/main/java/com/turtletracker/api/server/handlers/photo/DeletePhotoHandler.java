@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  */
 public class DeletePhotoHandler extends AuthenticatedHandler {
 
-    private static final Logger logger = Logger.getLogger(DeletePhotoHandler.class.getName());
+    //private static final Logger logger = Logger.getLogger(DeletePhotoHandler.class.getName());
 
     @Override
     public void handle(HttpExchange he, InputStream req, OutputStream res, String[] path) throws Exception {
@@ -41,7 +41,7 @@ public class DeletePhotoHandler extends AuthenticatedHandler {
 
             sendResponse(he, 404, "{\"err\":\"Photo: " + photoId + ": Not found...\"}");
         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            //logger.log(Level.SEVERE, null, ex);
         }
     }
 

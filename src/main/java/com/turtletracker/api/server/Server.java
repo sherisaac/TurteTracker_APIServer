@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.Executors;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,7 +66,9 @@ public class Server implements HttpHandler {
     private static void startServer(HttpServer server, JSONObject config) throws NoSuchAlgorithmException {
         server.createContext("/api", new Server(config));
 //        server.createContext("/" + config.getString("sslHost"), new HTTPSConfirmHandler(config.getString("sslTarget")));
-        server.setExecutor(null);
+        int poolSize = Runtime.getRuntime().availableProcessors() + 1;
+        server.setExecutor(Executors.newFixedThreadPool(poolSize));
+//        server.setExecutor(null);
         server.start();
     }
 

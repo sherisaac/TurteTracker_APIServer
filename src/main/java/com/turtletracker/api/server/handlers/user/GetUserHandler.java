@@ -22,7 +22,7 @@ import org.json.JSONObject;
  */
 public class GetUserHandler extends Handler {
 
-    private static final Logger logger = Logger.getLogger(GetUserHandler.class.getName());
+    //private static final Logger logger = Logger.getLogger(GetUserHandler.class.getName());
 
     @Override
     public void handle(HttpExchange he, InputStream req, OutputStream res, String[] path) throws Exception {

@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  */
 public class AuthUserHandler extends AuthenticatedHandler {
 
-    private static final Logger logger = Logger.getLogger(AuthUserHandler.class.getName());
+    //private static final Logger logger = Logger.getLogger(AuthUserHandler.class.getName());
 
     @Override
     public void handle(HttpExchange he, InputStream req, OutputStream res, String[] path) throws Exception {
@@ -34,7 +34,7 @@ public class AuthUserHandler extends AuthenticatedHandler {
 
         Map<String, String> queryMap = getQueryMap(he.getRequestURI().getQuery());
         Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `username`, `password`, `role` FROM user WHERE `username` = ? LIMIT 1")) {
+        try (PreparedStatement stmt = con.prepareStatement("SELECT `username`, `password`, `role` FROM user WHERE `username` = ? AND `role` > 0  LIMIT 1")) {
             stmt.setString(1, queryMap.get("username"));
 
             try (ResultSet rs = stmt.executeQuery()) {

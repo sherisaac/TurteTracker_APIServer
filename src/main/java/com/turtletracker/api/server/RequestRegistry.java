@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  */
 public class RequestRegistry {
 
-    private static final Logger logger = Logger.getLogger(RequestRegistry.class.getName());
+//    private static final Logger logger = Logger.getLogger(RequestRegistry.class.getName());
 
     private Map<Pair<String, String>, Handler> handlers = new HashMap<>();
 
@@ -68,13 +68,13 @@ public class RequestRegistry {
     public void handle(Pair<String, String> id, HttpExchange he, String[] path) throws Exception {
         Handler handler = handlers.get(id);
         if (handler == null) {
-            logger.log(Level.SEVERE, "Missing handler: {0}", id);
+//            logger.log(Level.SEVERE, "Missing handler: {0}", id);
             handler = handlers.get(null);
         }
         if (!handler.validate(he.getRequestHeaders(), path)) {
             he.getResponseHeaders().set("WWW-Authenticate", "Basic realm=\"TurtleAPI\"");
             handler.sendResponse(he, 401, "{\"err\":\"Unauthorized\"}");
-            logger.log(Level.SEVERE, "Unauthorized");
+//            logger.log(Level.SEVERE, "Unauthorized");
             return;
         }
         try (OutputStream out = he.getResponseBody()) {
