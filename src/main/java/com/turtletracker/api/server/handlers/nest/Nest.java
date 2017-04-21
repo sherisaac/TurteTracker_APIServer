@@ -47,7 +47,7 @@ public class Nest {
             }
         }
 
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `photoId` FROM photo WHERE `nestId` = ?")) {
+        try (PreparedStatement stmt = con.prepareStatement("SELECT `photoId` FROM photo WHERE `nestId` = ? AND `visible` = 1")) {
             stmt.setString(1, nestId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
