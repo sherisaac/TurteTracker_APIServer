@@ -17,14 +17,13 @@ import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.Executors;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 /**
@@ -33,7 +32,7 @@ import org.json.JSONObject;
  */
 public class Server implements HttpHandler {
 
-    private static final Logger logger = Logger.getLogger(Server.class.getName());
+    private static final Logger logger = LogManager.getLogger("Server");
 
     private final RequestRegistry requestHandlers = new RequestRegistry();
 
@@ -44,13 +43,9 @@ public class Server implements HttpHandler {
      */
     public static void main(String[] args) {
         try {
-            logger.log(Level.INFO, "Starting server...");
+            logger.info("Starting server...");
 
             JSONObject config = new JSONObject(new String(Files.readAllBytes(Paths.get("config.json"))));
-
-            if (config.getBoolean("consoleOut")) {
-                testSetup();
-            }
 
             startServer(HttpServer.create(new InetSocketAddress(config.getInt("httpPort")), 0), config);
 
@@ -59,7 +54,7 @@ public class Server implements HttpHandler {
             }
 
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
         }
     }
 
@@ -123,7 +118,7 @@ public class Server implements HttpHandler {
     @Override
     public void handle(HttpExchange he) {
         try {
-            logger.log(Level.INFO, "{0}: {1}", new Object[]{he.getRequestMethod(), he.toString()});
+            logger.info(he.getRequestMethod() + ": " + he.toString());
             he.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
             he.getResponseHeaders().set("Access-Control-Max-Age", "1800");
             he.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -144,27 +139,16 @@ public class Server implements HttpHandler {
             requestHandlers.handle(new Pair(path[2], method), he, path);
 
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             try {
                 String s = "Server error...";
                 he.sendResponseHeaders(500, s.length());
                 he.getResponseBody().write(s.getBytes());
             } catch (IOException ex1) {
-                logger.log(Level.SEVERE, null, ex1);
+                logger.error(ex.getMessage());
             }
         }
         he.close();
-    }
-
-    private static void testSetup() {
-        Logger.getLogger("").setUseParentHandlers(false);
-        java.util.logging.Handler[] handlers = Logger.getLogger("").getHandlers();
-        for (java.util.logging.Handler handler : handlers) {
-            if (handler.getClass() == ConsoleHandler.class) {
-                Logger.getLogger("").removeHandler(handler);
-            }
-        }
-        Logger.getLogger("").addHandler(new ConsoleHandler());
     }
 
 }

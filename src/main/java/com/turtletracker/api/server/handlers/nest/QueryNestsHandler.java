@@ -25,35 +25,38 @@ public class QueryNestsHandler extends AuthenticatedHandler {
 
     @Override
     public void handle(HttpExchange he, InputStream req, OutputStream res, String[] path) throws Exception {
+        try {
+            JSONObject json = new JSONObject(readString(req));
+            String username = json.getString("username");
+            String userId = getUserId(username);
 
-        JSONObject json = new JSONObject(readString(req));
-        String username = json.getString("username");
-        String userId = getUserId(username);
+            if (userId == null) {
+                sendResponse(he, 404, "{\"err\":\"" + username + ": Not found...\"}");
+                return;
+            }
+            Connection con = DatabaseConnection.getConnection();
 
-        if (userId == null) {
-            sendResponse(he, 404, "{\"err\":\"" + username + ": Not found...\"}");
-            return;
-        }
-        Connection con = DatabaseConnection.getConnection();
-
-        List<String> nestIds = new ArrayList<>();
-        try (PreparedStatement stmt = con.prepareStatement("SELECT `nestId` FROM nest WHERE `userId` = ? AND `visible` = 1")) {
-            stmt.setString(1, userId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    nestIds.add(rs.getString(1));
+            List<String> nestIds = new ArrayList<>();
+            try (PreparedStatement stmt = con.prepareStatement("SELECT `nestId` FROM nest WHERE `userId` = ? AND `visible` = 1")) {
+                stmt.setString(1, userId);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        nestIds.add(rs.getString(1));
+                    }
                 }
             }
+            JSONObject outJson = new JSONObject();
+            outJson.put("userId", userId);
+            JSONArray nests = new JSONArray();
+            for (String n : nestIds) {
+                Nest nest = new Nest(n);
+                nests.put(nest.getJSON());
+            }
+            outJson.put("nests", nests);
+            sendResponse(he, 200, outJson.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        JSONObject outJson = new JSONObject();
-        outJson.put("userId", userId);
-        JSONArray nests = new JSONArray();
-        for (String n : nestIds) {
-            Nest nest = new Nest(n);
-            nests.put(nest.getJSON());
-        }
-        outJson.put("nests", nests);
-        sendResponse(he, 200, outJson.toString());
     }
 
     @Override

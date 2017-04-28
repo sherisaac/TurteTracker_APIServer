@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <Properties>
+        <Property name="logLocation">logs/</Property>		
+		
+        <Property name="server-all">server-all.log</Property>
+		
+    </Properties>	
+
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="console" />
+        </Root>
+
+        <Logger name="server" level="ALL">
+            <AppenderRef ref="server-all" level="ALL" />
+        </Logger>		
+    </Loggers>
+
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+        
+        <RollingFile name="server-all" fileName="${logLocation}${server-all}" filePattern="${logLocation}${date:yyyy-MM}/${server-all}-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+</Configuration>
